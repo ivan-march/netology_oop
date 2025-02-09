@@ -175,14 +175,54 @@ for lecturer in lecturers.values():
                 grade=random.choice(grades)
             )
 
+print('4. Сравниваем средниие оценки за домашние задания студентов:')
+student1 = students[0]
+student2 = students[1]
+print(
+    f'{student1.name} {student1.surname} ({student1.average_grade()}) и',
+    f'{student2.name} {student2.surname} ({student2.average_grade()})'
+)
+print(
+    f'{student1.average_grade()} == {student2.average_grade()}:',
+    student1 == student2
+)
+print(
+    f'{student1.average_grade()} > {student2.average_grade()}:',
+    student1 > student2
+)
+print(
+    f'{student1.average_grade()} < {student2.average_grade()}:',
+    student1 < student2
+)
+
+print('5. Сравниваем средниие оценки за лекции лекторов:')
+lecturer1 = lecturers[0]
+lecturer2 = lecturers[1]
+print(
+    f'{lecturer1.name} {lecturer1.surname} ({lecturer1.average_grade()}) и',
+    f'{lecturer2.name} {lecturer2.surname} ({lecturer2.average_grade()})'
+)
+print(
+    f'{lecturer1.average_grade()} == {lecturer2.average_grade()}:',
+    lecturer1 == lecturer2
+)
+print(
+    f'{lecturer1.average_grade()} > {lecturer2.average_grade()}:',
+    lecturer1 > lecturer2
+)
+print(
+    f'{lecturer1.average_grade()} < {lecturer2.average_grade()}:',
+    lecturer1 < lecturer2
+)
+
 course = random.choice(courses)
 print(
-    f'4. Средняя оценка за домашние задания по всем студентам в рамках курса {course}:',
+    f'6. Средняя оценка за домашние задания по всем студентам в рамках курса {course}:',
     calc_average_hw_grade(students=students.values(), course=course)
 )
 
 course = random.choice(courses)
 print(
-    f'5. Cредняя оценка за лекции всех лекторов в рамках {course}:',
+    f'7. Cредняя оценка за лекции всех лекторов в рамках {course}:',
     calc_average_lecturer_grade(lecturers=lecturers.values(), course=course)
 )
