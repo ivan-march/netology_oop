@@ -12,17 +12,17 @@ class Gradeable:
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f'Операнд справа должен иметь тип {self.__class__}')
+            return NotImplemented
         return self.average_grade() == other.average_grade()
 
     def __lt__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f'Операнд справа должен иметь тип {self.__class__}')
+            return NotImplemented
         return self.average_grade() < other.average_grade()
 
     def __gt__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError(f'Операнд справа должен иметь тип {self.__class__}')
+            return NotImplemented
         return self.average_grade() > other.average_grade()
 
 
@@ -39,15 +39,15 @@ class Student(Gradeable):
         self.grades = {}
 
     def rate_lect(self, lecturer, course, grade):
+        if not (1 <= grade <= 10):
+            return 'Ошибка: оценка должна быть от 1 до 10'
+
         if (
             isinstance(lecturer, Lecturer) and
             course in lecturer.courses_attached and
             course in self.courses_in_progress
         ):
-            if course in lecturer.grades:
-                lecturer.grades[course].append(grade)
-            else:
-                lecturer.grades[course] = [grade]
+            lecturer.grades.setdefault(course, []).append(grade)
         else:
             return 'Ошибка'
 
@@ -83,7 +83,7 @@ class Lecturer(Mentor, Gradeable):
         self.grades = {}
 
     def __str__(self):
-        return super().__str__() + f'\nСредняя оценка за лекции: {self.average_grade()}'
+        return super().__str__() + f'\nСредняя оценка за лекции: {self.average_grade():.2f}'
 
 
 class Reviewer(Mentor):
@@ -106,17 +106,12 @@ class Reviewer(Mentor):
 
 def calc_average_hw_grade(students, course) -> float:
     total_grades = []
-    for student in students:
-        if course in student.courses_in_progress:
-            total_grades += student.grades[course]
+    total_grades = [grade for student in students if course in student.grades for grade in student.grades[course]]
     return round(sum(total_grades) / len(total_grades), 2) if total_grades else 0.0
-
 
 def calc_average_lecturer_grade(lecturers, course) -> float:
     total_grades = []
-    for lecturer in lecturers:
-        if course in lecturer.courses_attached:
-            total_grades += lecturer.grades[course]
+    total_grades = [grade for lecturer in lecturers if course in lecturer.grades for grade in lecturer.grades[course]]
     return round(sum(total_grades) / len(total_grades), 2) if total_grades else 0.0
 
 
@@ -156,7 +151,7 @@ for i in range(100):
     actual_courses = [course for course in courses if course not in students[i].finished_courses]
     students[i].courses_in_progress += actual_courses
     # оцениваем студента
-    for course in courses:
+    for course in students[i].courses_in_progress:
         reviewer.rate_hw(
             student=students[i],
             course=course,
